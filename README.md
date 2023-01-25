@@ -21,6 +21,8 @@ To see his(patients) appointments
 Cancel the appointment
  
 Duit the application
+ 
+Scheme from 1st meeting:
   
 ![IMG_2033](https://user-images.githubusercontent.com/122638029/214299315-96842888-2029-4ba0-a2ee-a2e4874bca25.jpg)
  
