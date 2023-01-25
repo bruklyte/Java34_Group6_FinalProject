@@ -11,10 +11,15 @@ Insertion of working hours.
 Try to do printing of the schedule.
  
 User selects:
+ 
 Print choice options
-Doctors list - to choose appointment time
+ 
+Doctors list - to choose appointment time 
+ 
 To see his(patients) appointments
+ 
 Cancel the appointment
+ 
 Duit the application
   
 ![IMG_2033](https://user-images.githubusercontent.com/122638029/214299315-96842888-2029-4ba0-a2ee-a2e4874bca25.jpg)
