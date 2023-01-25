@@ -1,3 +1,4 @@
+![flowchart](https://user-images.githubusercontent.com/122638029/214560874-03026326-60b3-459f-a89d-ead3076e7e4b.png)
 # Java34_Group6_FinalProject
 This is SGT Java 34 - Group 6 - Final project
 
