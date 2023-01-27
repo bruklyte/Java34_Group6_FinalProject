@@ -48,19 +48,19 @@ public class Main {
                     insertedUsername = scanner.nextLine();
                     String insertedPassword = scanner.nextLine();
                     loginData(conn, insertedUsername, insertedPassword);
-                    printChoicesList();
                 } else {
                     System.out.println("Invalid input");
                 }
 
 
-               // printChoicesList();
+
                 //Scanner scanner = new Scanner(System.in);
                 boolean quit = false;
 
                 int choice = 0;
                 while (!quit) {      // "!" perjungia i oposite value
-                    System.out.println("Enter your choise");
+                    System.out.print("Enter your choise");
+                    printChoicesList();
                     try {
                         choice = scanner.nextInt();
                         scanner.nextLine();
@@ -100,7 +100,6 @@ public class Main {
                         System.err.println("Wrong input!");
                         scanner.nextLine();
                     }
-
                 }
                 System.out.println("DO you want to login as another user? y/n ");
                 again = scanner.nextLine().charAt(0);
