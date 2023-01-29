@@ -8,12 +8,11 @@ public class Main {
     public static void main(String[] args) {
         String dbURL = "jdbc:mysql://localhost:3306/java34";
         String username = "root";
-        String password = "Password123!";
+        String password = "Password1234!";
         Scanner scanner = new Scanner(System.in);
         LocalDate today = LocalDate.now();
         LocalDate nextWeek = today.plus(7, ChronoUnit.DAYS);
-        Statement stmt = null;
-        String insertedUsername;
+        String insertedUsername = null;
         char again = 'y';
 
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
@@ -41,25 +40,21 @@ public class Main {
 
                     insertData(conn, newUsername, newPassword, newFullName, newDateOFBirth);
                     //System.out.println("You are registered");
-                    printChoicesList();
+                    //printChoicesList(); - printing choices twice
 
                 } else if (action == 'l') {
                     System.out.println("Enter username and password");
                     insertedUsername = scanner.nextLine();
                     String insertedPassword = scanner.nextLine();
                     loginData(conn, insertedUsername, insertedPassword);
-                } else {
-                    System.out.println("Invalid input");
                 }
-
-
 
                 //Scanner scanner = new Scanner(System.in);
                 boolean quit = false;
 
                 int choice = 0;
                 while (!quit) {      // "!" perjungia i oposite value
-                    System.out.print("Enter your choise");
+                    System.out.print("Enter your choice");
                     printChoicesList();
                     try {
                         choice = scanner.nextInt();
@@ -77,7 +72,32 @@ public class Main {
                                 break;
                             case 2:
                                 //Select appointment date and time;
-                                chooseAppointmentTime();
+                                System.out.println("Please choose a doctor (1,2,3)");
+                                printDoctorsList(conn);
+                                int chosenDoctor = scanner.nextInt();
+                                scanner.nextLine();
+
+                                System.out.println("Please choose a date between today (" + today + ") and next week (" + nextWeek + "):");
+
+                                LocalDate selectedDate = LocalDate.parse(scanner.nextLine());
+                                if (selectedDate.isAfter(nextWeek) || selectedDate.isBefore(today)) {
+                                    System.out.println("Invalid date. Please choose a date between " + today + " and " + nextWeek);
+                                } else {
+                                    System.out.println("You have selected " + selectedDate);
+                                }
+                                if (checkingDate(conn, chosenDoctor, selectedDate) > 0) {
+                                    System.out.println("Please choose a free appointment time");
+                                    printFreeTimes(conn);
+                                    String columName = scanner.nextLine();
+                                    appointingFreeSlot(conn, chosenDoctor, selectedDate, insertedUsername, columName);
+
+                                } else {
+                                    System.out.println("Please choose an appointments time (1,2,3,4,5)");
+                                    printTimes(conn);
+                                    int column = scanner.nextInt() + 3;
+                                    appointing(conn, chosenDoctor, selectedDate, insertedUsername, column);
+                                }
+
                                 break;
                             case 3:
                                 //MyAppointments;
@@ -108,8 +128,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public static void loginData(Connection conn, String insertedUsername, String insertedPassword) throws SQLException {
@@ -119,7 +137,6 @@ public class Main {
 
         if (resultSet.next()) {
             System.out.println("You have logged in successfully");
-            choicesAfterLogin();
         } else {
             System.out.println("Wrong username or password");
         }
@@ -151,14 +168,14 @@ public class Main {
     }*/
 
     //insert patient
-    public static void insertData(Connection conn, String username, String password, String fullname, String dateofbirth) throws SQLException {
+    public static void insertData(Connection conn, String newUsername, String newPassword, String newFullName, String newDateOFBirth) throws SQLException {
 
         String sql = "INSERT INTO users (username, password, fullname, dateofbirth) VALUES (?, ?, ?, ?)";
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, username);
-        statement.setString(2, password);
-        statement.setString(3, fullname);
-        statement.setString(4, dateofbirth);
+        statement.setString(1, newUsername);
+        statement.setString(2, newPassword);
+        statement.setString(3, newFullName);
+        statement.setString(4, newDateOFBirth);
 
         int rowInserted = statement.executeUpdate();
 
@@ -193,11 +210,6 @@ public class Main {
         System.out.println("\t 5 - To quit the application");
     }
 
-
-    private static void chooseAppointmentTime() {
-        System.out.println("Test for choosing appointment");
-
-    }
 
     private static void printMyAppointments() {      //search for appointment and print
         System.out.println("Test - Just a test for Printing appointments list");
@@ -244,7 +256,7 @@ public class Main {
         int columnsNumber = rsmd.getColumnCount();
 
 
-        for (int i = 3; i <= columnsNumber - 1; i++) {
+        for (int i = 3; i <= columnsNumber; i++) {
             String columnName = rsmd.getColumnName(i);
             System.out.print(columnName + " ");
         }
@@ -336,4 +348,115 @@ public class Main {
 
 
     }
-}
+    public static int checkingDate(Connection conn, int chosenDoctor, LocalDate selectedDate) throws SQLException {
+        String sql = "SELECT FROM appointments (doctor, date) VALUES (?, ?)";
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM appointments WHERE doctor = '" + chosenDoctor + "' AND date = '" + selectedDate + "'");
+        if (!rs.next()) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public static void printFreeTimes(Connection conn) throws SQLException {
+        Statement statement = conn.createStatement();
+        String sql = "SELECT * FROM appointments";
+
+        ResultSet rs = statement.executeQuery(sql);
+        if (!rs.next()) {
+            System.out.println("No data in the table");
+        } else {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = rsmd.getColumnName(i);
+                if (rs.getObject(i) == null) {
+                    System.out.print(columnName + " ");
+                }
+            }
+        }
+    }
+
+    public static void appointingFreeSlot (Connection conn, int chosenDoctor, LocalDate selectedDate, String insertedUsername, String columnName ) throws SQLException{
+        if (columnName.equals("9_AM")){
+            String sql = "UPDATE appointments SET 9_AM = ? WHERE doctor = ? AND date = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, getUserID(conn, insertedUsername));
+            statement.setInt(2, chosenDoctor);
+            statement.setString(3, String.valueOf(selectedDate));
+
+            int rowInserted = statement.executeUpdate();
+
+            if (rowInserted > 0) {
+                System.out.println("A new appointment was inserted succesfully");
+            } else {
+                System.out.println("Smthng went wrong");
+            }
+
+
+        } else if (columnName.equals("10_AM")) {
+            String sql = "UPDATE appointments SET 10_AM = ? WHERE doctor = ? AND date = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, getUserID(conn, insertedUsername));
+            statement.setInt(2, chosenDoctor);
+            statement.setString(3, String.valueOf(selectedDate));
+
+            int rowInserted = statement.executeUpdate();
+
+            if (rowInserted > 0) {
+                System.out.println("A new appointment was inserted succesfully");
+            } else {
+                System.out.println("Smthng went wrong");
+            }
+
+        } else if (columnName.equals("2_PM")) {
+            String sql = "UPDATE appointments SET 2_PM = ? WHERE doctor = ? AND date = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, getUserID(conn, insertedUsername));
+            statement.setInt(2, chosenDoctor);
+            statement.setString(3, String.valueOf(selectedDate));
+
+            int rowInserted = statement.executeUpdate();
+
+            if (rowInserted > 0) {
+                System.out.println("A new appointment was inserted succesfully");
+            } else {
+                System.out.println("Smthng went wrong");
+            }
+
+        } else if (columnName.equals("3_PM")) {
+            String sql = "UPDATE appointments SET 3_PM = ? WHERE doctor = ? AND date = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, getUserID(conn, insertedUsername));
+            statement.setInt(2, chosenDoctor);
+            statement.setString(3, String.valueOf(selectedDate));
+
+            int rowInserted = statement.executeUpdate();
+
+            if (rowInserted > 0) {
+                System.out.println("A new appointment was inserted succesfully");
+            } else {
+                System.out.println("Smthng went wrong");
+            }
+
+        } else if (columnName.equals("4_PM")) {
+            String sql = "UPDATE appointments SET 4_PM = ? WHERE doctor = ? AND date = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, getUserID(conn, insertedUsername));
+            statement.setInt(2, chosenDoctor);
+            statement.setString(3, String.valueOf(selectedDate));
+
+            int rowInserted = statement.executeUpdate();
+
+            if (rowInserted > 0) {
+                System.out.println("A new appointment was inserted succesfully");
+            } else {
+                System.out.println("Smthng went wrong");
+            }
+
+        }else {
+            System.out.println("Wrong time");
+        }
+    }
+    }
