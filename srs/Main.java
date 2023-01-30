@@ -48,7 +48,7 @@ public class Main {
                     newPassword = scanner.nextLine();
                     passwordValid = Validations.PasswordValidator.isValidPassword(newPassword);
                     if (!passwordValid) {
-                        System.out.println("Invalid password format. Please try again.");
+                        System.out.println("Your password should contain at least one digit, one lowercase letter, one uppercase letter, one special character and be not shorter than 8 characters. Please try again.");
                     }
                     } while (!passwordValid);
 
@@ -57,16 +57,16 @@ public class Main {
                     newFullName = scanner.nextLine();
                     nameValid = Validations.FullNameValidator.isValidFullName(newFullName);
                     if (!nameValid) {
-                        System.out.println("Invalid full name format. Please try again.");
+                        System.out.println("Please enter your name and surname and try again.");
                         }
                     } while (!nameValid);
 
                     do{
-                        System.out.println("Enter date of birth");
+                        System.out.println("Enter your date of birth (YYYY-MM-DD):");
                         newDateOFBirth = scanner.nextLine();
                         dobValid = Validations.DOBisValid(newDateOFBirth);
                         if (!dobValid) {
-                            System.out.println("Invalid date of birth format. Please try again.");
+                            System.out.println("Please check your date of birth and try again.");
                         }
                     } while (!dobValid);
 

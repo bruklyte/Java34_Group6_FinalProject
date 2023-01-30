@@ -38,7 +38,7 @@ public class Validations {
 
     // at least one digit, one lowercase letter, one uppercase letter, one special character (@#$%^&+=) and has a minimum length of 8 characters.
     public class PasswordValidator {
-        private static Pattern passwordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
+        private static Pattern passwordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^!&+=])(?=\\S+$).{8,}$");
 
         public static boolean isValidPassword(String password) {
             Matcher matcher = passwordPattern.matcher(password);
