@@ -1,14 +1,18 @@
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        String dbURL = "jdbc:mysql://localhost:3306/java34";
+        String dbURL = "jdbc:mysql://localhost:3306/final_project";
         String username = "root";
-        String password = "Password1234!";
+        String password = "Solo2463774!";
         Scanner scanner = new Scanner(System.in);
         LocalDate today = LocalDate.now();
         LocalDate nextWeek = today.plus(7, ChronoUnit.DAYS);
@@ -26,17 +30,46 @@ public class Main {
                 char action = scanner.nextLine().charAt(0);
 
                 if (action == 'r') {
+
+                    String newDateOFBirth, newFullName, newUsername, newPassword;
+                    boolean dobValid, nameValid, usernameValid, passwordValid;
+
+                    do{
                     System.out.println("Enter username");
-                    String newUsername = scanner.nextLine();
+                    newUsername = scanner.nextLine();
+                    usernameValid = Validations.UserNameValidator.isValidUsername(username);
+                    if (!usernameValid) {
+                        System.out.println("Invalid username format. Please try again.");
+                    }
+                    } while (!usernameValid);
 
+                    do{
                     System.out.println("Enter password");
-                    String newPassword = scanner.nextLine();
+                    newPassword = scanner.nextLine();
+                    passwordValid = Validations.PasswordValidator.isValidPassword(newPassword);
+                    if (!passwordValid) {
+                        System.out.println("Invalid password format. Please try again.");
+                    }
+                    } while (!passwordValid);
 
+                    do{
                     System.out.println("Enter full name");
-                    String newFullName = scanner.nextLine();
+                    newFullName = scanner.nextLine();
+                    nameValid = Validations.FullNameValidator.isValidFullName(newFullName);
+                    if (!nameValid) {
+                        System.out.println("Invalid full name format. Please try again.");
+                        }
+                    } while (!nameValid);
 
-                    System.out.println("Enter date of birth");
-                    String newDateOFBirth = scanner.nextLine();
+                    do{
+                        System.out.println("Enter date of birth");
+                        newDateOFBirth = scanner.nextLine();
+                        dobValid = Validations.DOBisValid(newDateOFBirth);
+                        if (!dobValid) {
+                            System.out.println("Invalid date of birth format. Please try again.");
+                        }
+                    } while (!dobValid);
+
 
                     insertData(conn, newUsername, newPassword, newFullName, newDateOFBirth);
                     //System.out.println("You are registered");
@@ -460,3 +493,5 @@ public class Main {
         }
     }
     }
+
+
