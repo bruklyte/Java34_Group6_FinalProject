@@ -26,4 +26,5 @@ Scheme from 1st meeting:
   
 ![IMG_2033](https://user-images.githubusercontent.com/122638029/214299315-96842888-2029-4ba0-a2ee-a2e4874bca25.jpg)
  
-![Flowchart (1)](https://user-images.githubusercontent.com/86713452/215142395-0abbb876-1016-4cc3-81d4-0e85c1219079.png)
+![Flowchart (2)](https://user-images.githubusercontent.com/86713452/215881623-f660683d-f05f-4eeb-8204-7c1611182063.png)
+
