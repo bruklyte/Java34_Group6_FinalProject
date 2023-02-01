@@ -15,37 +15,13 @@ public class DataBase {
             return 0;
         }
     }
-    /*//read data metodas
-    public static void readData(Connection conn) throws SQLException {
 
-        String sql = "SELECT * FROM users";
-        Statement statement = conn.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-
-        int count = 0;
-
-        while (resultSet.next()) {
-
-            String username = resultSet.getString(2);
-            String password = resultSet.getString(3);
-            String fullName = resultSet.getString("fullname");
-            String email = resultSet.getString("email");
-
-            String output = "User #%d: %s - %s - %s - %s ";
-            System.out.println(String.format(output, ++count, username, password, fullName, email));
-
-
-        }
-
-    }*/
-
-    //insert patient
-    public static void insertData(Connection conn, String newUsername, String newPassword, String newFullName, String newDateOFBirth) throws SQLException {
+    public static void insertData(Connection conn, String insertedUsername, String insertedPassword, String newFullName, String newDateOFBirth) throws SQLException {
 
         String sql = "INSERT INTO users (username, password, fullname, dateofbirth) VALUES (?, ?, ?, ?)";
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, newUsername);
-        statement.setString(2, newPassword);
+        statement.setString(1, insertedUsername);
+        statement.setString(2, insertedPassword);
         statement.setString(3, newFullName);
         statement.setString(4, newDateOFBirth);
 
@@ -53,20 +29,6 @@ public class DataBase {
 
         if (rowInserted > 0) {
             System.out.println("Registration of a user was successful");
-            choicesAfterLogin();
-        } else {
-            System.out.println("Something went wrong");
-        }
-    }
-
-    //delete appointment
-    public static void deleteData(Connection conn, String username) throws SQLException {
-        String sql = "DELETE FROM users WHERE username = ?";
-        PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, username);
-
-        if (statement.executeUpdate() > 0) {
-            System.out.println("User deleted successfully");
         } else {
             System.out.println("Something went wrong");
         }
@@ -80,13 +42,6 @@ public class DataBase {
         System.out.println("\t 3 - Your appointments list");
         System.out.println("\t 4 - Cancel the appointment");
         System.out.println("\t 5 - To quit the application");
-    }
-
-
-    public static void choicesAfterLogin() {
-        Scanner scanner = new Scanner(System.in);
-        boolean quit = false;
-        int choice = 0;
     }
 
     public static void printDoctorsList(Connection conn) throws SQLException {
@@ -104,7 +59,6 @@ public class DataBase {
             System.out.printf("No. %d:  %s \n",
                     resultSet.getInt(1), resultSet.getString(2));
         }
-
     }
 
     public static void printTimes(Connection conn) throws SQLException {
@@ -119,7 +73,6 @@ public class DataBase {
             String columnName = rsmd.getColumnName(i);
             System.out.print(columnName + " ");
         }
-
     }
 
     public static int getUserID(Connection conn, String insertedUsername) throws SQLException {
@@ -131,7 +84,6 @@ public class DataBase {
         } else {
             return 0;
         }
-
     }
     public static void appointing(Connection conn, int chosenDoctor, LocalDate selectedDate, String insertedUsername, int column) throws SQLException {
 
@@ -203,8 +155,6 @@ public class DataBase {
         } else {
             System.out.println("Wrong data");
         }
-
-
     }
     public static int checkingDate(Connection conn, int chosenDoctor, LocalDate selectedDate) throws SQLException {
         String sql = "SELECT FROM appointments (doctor, date) VALUES (?, ?)";
@@ -217,9 +167,9 @@ public class DataBase {
         }
     }
 
-    public static void printFreeTimes(Connection conn) throws SQLException {
+    public static void printFreeTimes(Connection conn, int chosenDoctor, LocalDate selectedDate) throws SQLException {
         Statement statement = conn.createStatement();
-        String sql = "SELECT * FROM appointments";
+        String sql = "SELECT * FROM appointments WHERE doctor = '" +chosenDoctor+ "' AND date = '" +selectedDate+ "'";
 
         ResultSet rs = statement.executeQuery(sql);
         if (!rs.next()) {
@@ -227,7 +177,7 @@ public class DataBase {
         } else {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
-            for (int i = 1; i <= columnCount; i++) {
+            for (int i = 3; i <= columnCount; i++) {
                 String columnName = rsmd.getColumnName(i);
                 if (rs.getObject(i) == null) {
                     System.out.print(columnName + " ");
@@ -252,7 +202,6 @@ public class DataBase {
             } else {
                 System.out.println("Something went wrong");
             }
-
         } else if (columnName.equals("10_AM")) {
             String sql = "UPDATE appointments SET 10_AM = ? WHERE doctor = ? AND date = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -267,7 +216,6 @@ public class DataBase {
             } else {
                 System.out.println("Something went wrong");
             }
-
         } else if (columnName.equals("2_PM")) {
             String sql = "UPDATE appointments SET 2_PM = ? WHERE doctor = ? AND date = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -282,7 +230,6 @@ public class DataBase {
             } else {
                 System.out.println("Something went wrong");
             }
-
         } else if (columnName.equals("3_PM")) {
             String sql = "UPDATE appointments SET 3_PM = ? WHERE doctor = ? AND date = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -297,7 +244,6 @@ public class DataBase {
             } else {
                 System.out.println("Something went wrong");
             }
-
         } else if (columnName.equals("4_PM")) {
             String sql = "UPDATE appointments SET 4_PM = ? WHERE doctor = ? AND date = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -325,7 +271,7 @@ public class DataBase {
         String query = "SELECT a.Date, a.9_AM, a.10_AM, a.2_PM, a.3_PM, a.4_PM, d.DoctorsFullName " +
                 "FROM Appointments a JOIN doctors d ON a.doctor = d.DoctorsID " +
                 "WHERE " +
-                "  9_AM = '" + userID + "' OR " +
+                " 9_AM = '" + userID + "' OR " +
                 "  10_AM = '" + userID + "' OR " +
                 "  2_PM = '" + userID + "' OR " +
                 "  3_PM = '" + userID + "' OR " +
@@ -334,6 +280,7 @@ public class DataBase {
         if (!rs.next()){
             System.out.println("You don't have any appointments yet");
         }
+        rs = stmt.executeQuery(query);
         while (rs.next()) {
             String date = rs.getString("Date");
             String doctorName = rs.getString("DoctorsFullName");
@@ -387,7 +334,6 @@ public class DataBase {
         } else if (columnName.equals("10_AM")) {
             String sql = "UPDATE appointments SET 10_AM = null WHERE date = '" + selectedDate + "'";
             PreparedStatement statement = conn.prepareStatement(sql);
-
 
             int rowInserted = statement.executeUpdate();
 

@@ -31,13 +31,13 @@ public class Main {
 
                 if (action == 'r') {
 
-                    String newDateOFBirth, newFullName, newUsername, newPassword;
+                    String newDateOFBirth, newFullName, insertedPassword;
                     boolean dobValid, nameValid, usernameValid, passwordValid;
 
                     do{
                     System.out.println("Enter username");
-                    newUsername = scanner.nextLine();
-                    usernameValid = Validations.UserNameValidator.isValidUsername(username);
+                    insertedUsername = scanner.nextLine();
+                    usernameValid = Validations.UserNameValidator.isValidUsername(insertedUsername);
                     if (!usernameValid) {
                         System.out.println("Invalid username format. Please try again.");
                     }
@@ -45,8 +45,8 @@ public class Main {
 
                     do{
                     System.out.println("Enter password, containing at least one digit, one lowercase letter, one uppercase letter, one special character and not shorter than 8 characters");
-                    newPassword = scanner.nextLine();
-                    passwordValid = Validations.PasswordValidator.isValidPassword(newPassword);
+                    insertedPassword = scanner.nextLine();
+                    passwordValid = Validations.PasswordValidator.isValidPassword(insertedPassword);
                     if (!passwordValid) {
                         System.out.println("Your password should contain at least one digit, one lowercase letter, one uppercase letter, one special character and be not shorter than 8 characters. Please try again.");
                     }
@@ -69,11 +69,8 @@ public class Main {
                             System.out.println("Please check your date of birth and try again.");
                         }
                     } while (!dobValid);
-
-
-                    DataBase.insertData(conn, newUsername, newPassword, newFullName, newDateOFBirth);
-                    //System.out.println("You are registered");
-                    //printChoicesList(); - printing choices twice
+                    
+                    DataBase.insertData(conn, insertedUsername, insertedPassword, newFullName, newDateOFBirth);
 
                 } else if (action == 'l') {
                     while (true){
@@ -92,9 +89,7 @@ public class Main {
                     }
                 }
 
-                //Scanner scanner = new Scanner(System.in);
                 boolean quit = false;
-
                 int choice = 0;
                 while (!quit) {
                     System.out.print("Enter your choice");
@@ -105,21 +100,19 @@ public class Main {
 
                         switch (choice) {
                             case 0:
-                                DataBase.printChoicesList();
+                                //DataBase.printChoicesList();
                                 break;
                             case 1:
-                                // DoctorsList - to choose appointment time;
-                                // doctorsList.printDoctorsList();
                                 DataBase.printDoctorsList(conn);
                                 break;
                             case 2:
-                                //Select appointment date and time;
                                 System.out.println("Please choose a doctor (1,2,3,4)");
                                 DataBase.printDoctorsList(conn);
                                 int chosenDoctor = scanner.nextInt();
                                 System.out.println();
                                 scanner.nextLine();
                                 LocalDate selectedDate;
+
                                 while(true){
                                     System.out.println("Please choose a date between today (" + today + ") and next week (" + nextWeek + "):");
                                     selectedDate = LocalDate.parse(scanner.nextLine());
@@ -135,7 +128,7 @@ public class Main {
 
                                 if (DataBase.checkingDate(conn, chosenDoctor, selectedDate) > 0) {
                                     System.out.println("Please choose a free appointment time");
-                                    DataBase.printFreeTimes(conn);
+                                    DataBase.printFreeTimes(conn, chosenDoctor, selectedDate);
                                     String columName = scanner.nextLine();
                                     DataBase.appointingFreeSlot(conn, chosenDoctor, selectedDate, insertedUsername, columName);
 
@@ -148,12 +141,11 @@ public class Main {
                                 }
                                 break;
                             case 3:
+                                System.out.println("Your appointments list:");
                                 DataBase.printingMyAppointments(conn, insertedUsername);
-
-
                                 break;
                             case 4:
-                                System.out.println("Please enter the appointment date");
+                                System.out.println("Please enter the appointment date (YYYY-MM-DD)");
                                 selectedDate = LocalDate.parse(scanner.nextLine());
 
                                 if(DataBase.checkingIfUserAlreadyHaveAppointment(conn, selectedDate, insertedUsername) > 0){
@@ -178,7 +170,6 @@ public class Main {
                 }
                 System.out.println("DO you want to login as another user? y/n ");
                 again = scanner.nextLine().charAt(0);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
