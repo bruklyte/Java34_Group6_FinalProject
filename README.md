@@ -3,23 +3,19 @@
 This is SGT Java 34 - Group 6 - Final project
 
 ## Project Description
-The system for booking appointments for doctors. Funcionality:
-Patient can register or login.
-See doctors list.
-View own appointments.
-Add new appointment.
- 
-User in
- 
-Print choice options
- 
-Doctors list - to choose appointment time 
- 
-To see his(patients) appointments
- 
-Cancel the appointment
- 
-Duit the application
+The system for booking appointments for doctors. 
+Funcionality:
+- Patient can register or login.
+- Print choice options.
+- See doctors list (listed 3 doctors).
+- Select apointment date and time (7 days from this day).
+- One user can have one apointment a day.
+- View own appointments.
+- Add new appointment.
+- Cancel existing apointment.
+- Quit application.
+
+
  
  
  
