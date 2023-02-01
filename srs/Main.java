@@ -44,7 +44,7 @@ public class Main {
                     } while (!usernameValid);
 
                     do{
-                    System.out.println("Enter password");
+                    System.out.println("Enter password, containing at least one digit, one lowercase letter, one uppercase letter, one special character and not shorter than 8 characters");
                     newPassword = scanner.nextLine();
                     passwordValid = Validations.PasswordValidator.isValidPassword(newPassword);
                     if (!passwordValid) {
@@ -114,7 +114,7 @@ public class Main {
                                 break;
                             case 2:
                                 //Select appointment date and time;
-                                System.out.println("Please choose a doctor (1,2,3)");
+                                System.out.println("Please choose a doctor (1,2,3,4)");
                                 DataBase.printDoctorsList(conn);
                                 int chosenDoctor = scanner.nextInt();
                                 System.out.println();
@@ -149,6 +149,8 @@ public class Main {
                                 break;
                             case 3:
                                 DataBase.printingMyAppointments(conn, insertedUsername);
+
+
                                 break;
                             case 4:
                                 System.out.println("Please enter the appointment date");

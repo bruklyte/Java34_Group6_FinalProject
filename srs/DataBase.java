@@ -331,6 +331,9 @@ public class DataBase {
                 "  3_PM = '" + userID + "' OR " +
                 "  4_PM = '" + userID + "'";
         rs = stmt.executeQuery(query);
+        if (!rs.next()){
+            System.out.println("You don't have any appointments yet");
+        }
         while (rs.next()) {
             String date = rs.getString("Date");
             String doctorName = rs.getString("DoctorsFullName");
