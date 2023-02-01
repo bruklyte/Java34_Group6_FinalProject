@@ -6,7 +6,7 @@ This is SGT Java 34 - Group 6 - Final project
 The system for booking appointments for doctors. 
 Funcionality:
 - Patient can register or login.
-
+<img width="1345" alt="Login or register" src="https://user-images.githubusercontent.com/122746962/216129825-7769ae8b-893e-4ff5-980e-9226aa659ee3.png">
 
 - Print choice options.
 <img width="1341" alt="Choice list" src="https://user-images.githubusercontent.com/122746962/216129191-8cb3858d-e8af-4bdd-b08c-1ff6e44063d2.png">
