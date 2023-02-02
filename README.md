@@ -46,6 +46,10 @@ The project is completed but can be expanded and functionality for doctors to vi
 
 ## Authors
 Ļubova Streluhina
+
+Sandra Rimke
+
 Veranika Salabai
+
 Simona Minelge
 
